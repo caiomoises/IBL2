@@ -27,7 +27,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
             <div className="ml-10 flex items-baseline space-x-8">
               <a href="#home" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Início</a>
               <a href="#about" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Sobre</a>
-              <a href="#events" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Eventos</a>
+              <a href="#events" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Agenda</a>
               <a href="#sermons" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Mensagens</a>
               <a href="#contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contato</a>
               <a href="#doar" className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">

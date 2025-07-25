@@ -8,7 +8,7 @@ const Hero = () => {
         <div className="md:flex md:items-center md:justify-between">
           <div className="md:w-1/2 mb-12 md:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-              Bem-vindo à <span className="text-yellow-500">Lagoinha</span>
+              Bem-vindo à <span className="text-yellow-500">Lagoinha CV</span>
             </h1>
             <p className="text-gray-300 text-lg md:text-xl mb-8">
               Uma comunidade de fé, amor e esperança.

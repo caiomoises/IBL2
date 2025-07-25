@@ -18,13 +18,13 @@ const Footer = () => {
               Uma comunidade de fé, amor e esperança.
             </p>
             <div className="flex space-x-4">
-              <a href="https://exemplo.com" className="text-gray-400 hover:text-yellow-500">
+              <a href="https://facebook.com" className="text-gray-400 hover:text-yellow-500">
                 <FontAwesomeIcon icon={faFacebookF} />
               </a>
-              <a href="https://exemplo.com" className="text-gray-400 hover:text-yellow-500">
+              <a href="https://www.instagram.com/igrejalagoinhacidadeverde/" className="text-gray-400 hover:text-yellow-500">
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
-              <a href="https://exemplo.com" className="text-gray-400 hover:text-yellow-500">
+              <a href="https://www.youtube.com/@lagoinhacidadeverde" className="text-gray-400 hover:text-yellow-500">
                 <FontAwesomeIcon icon={faYoutube} />
               </a>
             </div>
@@ -35,7 +35,10 @@ const Footer = () => {
         
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} Igreja Lagoinha. Todos os direitos reservados.
+            <footer className="bg-gray-900 text-gray-400 text-center py-6 text-sm">
+            &copy; {new Date().getFullYear()} Igreja Lagoinha. Todos os direitos reservados.  
+            <span className="block sm:inline"> Desenvolvido por <strong className="text-white">Caio Moisés Vieira Cavalcante</strong></span>
+            </footer>
           </p>
         </div>
       </div>
