@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faPhoneAlt, faEnvelope, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faPhoneAlt} from '@fortawesome/free-solid-svg-icons';
 
 const Contact = () => {
   return (

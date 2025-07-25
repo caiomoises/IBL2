@@ -1,6 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-
 const Sermons = () => {
   return (
     <section id="sermons" className="py-16 bg-gray-800">
