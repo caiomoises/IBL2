@@ -10,7 +10,7 @@ const MobileMenu = ({ isOpen, closeMenu }) => {
         <a href="#events" onClick={closeMenu} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Eventos</a>
         <a href="#sermons" onClick={closeMenu} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Mensagens</a>
         <a href="#contact" onClick={closeMenu} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contato</a>
-        <a href="#" onClick={closeMenu} className="bg-yellow-600 hover:bg-yellow-700 text-white block px-3 py-2 rounded-md text-base font-medium text-center">
+        <a href="#doar" onClick={closeMenu} className="bg-yellow-600 hover:bg-yellow-700 text-white block px-3 py-2 rounded-md text-base font-medium text-center">
           Doar <FontAwesomeIcon icon={faHeart} className="ml-1" />
         </a>
       </div>

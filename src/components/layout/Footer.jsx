@@ -18,13 +18,13 @@ const Footer = () => {
               Uma comunidade de fé, amor e esperança.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-yellow-500">
+              <a href="https://exemplo.com" className="text-gray-400 hover:text-yellow-500">
                 <FontAwesomeIcon icon={faFacebookF} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-yellow-500">
+              <a href="https://exemplo.com" className="text-gray-400 hover:text-yellow-500">
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
-              <a href="#" className="text-gray-400 hover:text-yellow-500">
+              <a href="https://exemplo.com" className="text-gray-400 hover:text-yellow-500">
                 <FontAwesomeIcon icon={faYoutube} />
               </a>
             </div>

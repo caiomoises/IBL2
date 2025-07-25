@@ -28,7 +28,7 @@ const EventCard = ({ event }) => {
             <FontAwesomeIcon icon={faMapMarkerAlt} className="text-yellow-500 mr-2" />
             <span className="text-gray-300">{event.location}</span>
           </div>
-          <a href="#" className="text-yellow-500 hover:text-yellow-400 font-medium">
+          <a href="https://exemplo.com" className="text-yellow-500 hover:text-yellow-400 font-medium">
             Mais detalhes <FontAwesomeIcon icon={faArrowRight} className="ml-1" />
           </a>
         </div>

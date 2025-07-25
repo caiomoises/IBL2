@@ -30,7 +30,7 @@ const Header = ({ isMobileMenuOpen, setIsMobileMenuOpen }) => {
               <a href="#events" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Eventos</a>
               <a href="#sermons" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Mensagens</a>
               <a href="#contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contato</a>
-              <a href="#" className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
+              <a href="#doar" className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300">
                 Doar <FontAwesomeIcon icon={faHeart} className="ml-1" />
               </a>
             </div>
