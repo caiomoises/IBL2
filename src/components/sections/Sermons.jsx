@@ -6,7 +6,8 @@ import { Navigation, Autoplay } from 'swiper/modules';
 
 const Sermons = () => {
   const swiperRef = useRef(null);
-  const playersRef = useRef({});
+  const navigationPrevRef = useRef(null);
+  const navigationNextRef = useRef(null);
   const [apiReady, setApiReady] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -61,74 +62,14 @@ const Sermons = () => {
     };
   }, []);
 
-  // Inicializa os players quando a API estiver pronta
-  useEffect(() => {
-    if (!apiReady || !swiperRef.current) return;
-
-    const handleStateChange = (event) => {
-      if (!swiperRef.current || !swiperRef.current.autoplay) return;
-      
-      // Verifica o estado de todos os players
-      const anyVideoPlaying = Object.values(playersRef.current).some(
-        player => player?.getPlayerState?.() === window.YT.PlayerState.PLAYING
-      );
-
-      if (anyVideoPlaying) {
-        swiperRef.current.autoplay.stop();
-        if (isMobile) {
-          swiperRef.current.allowTouchMove = false;
-        }
-      } else {
-        swiperRef.current.autoplay.start();
-        if (isMobile) {
-          swiperRef.current.allowTouchMove = true;
-        }
-      }
-    };
-
-    const initializePlayers = () => {
-      videos.forEach((_, index) => {
-        try {
-          if (!playersRef.current[index] && document.getElementById(`player-${index}`)) {
-            playersRef.current[index] = new window.YT.Player(`player-${index}`, {
-              events: {
-                onStateChange: handleStateChange
-              }
-            });
-          }
-        } catch (error) {
-          console.error(`Error initializing player ${index}:`, error);
-        }
-      });
-    };
-
-    initializePlayers();
-
-    // Fallback para caso os iframes não estejam prontos
-    const fallbackTimer = setTimeout(initializePlayers, 1000);
-
-    return () => {
-      clearTimeout(fallbackTimer);
-      Object.values(playersRef.current).forEach(player => {
-        try {
-          if (player && typeof player.destroy === 'function') {
-            player.destroy();
-          }
-        } catch (error) {
-          console.error('Error destroying player:', error);
-        }
-      });
-    };
-  }, [apiReady, isMobile]);
-
   // Configurações do Swiper
   const swiperParams = {
     modules: [Navigation, Autoplay],
     spaceBetween: 20,
     slidesPerView: 1,
     navigation: {
-      prevEl: '.swiper-button-prev',
-      nextEl: '.swiper-button-next',
+      prevEl: navigationPrevRef.current,
+      nextEl: navigationNextRef.current,
     },
     autoplay: {
       delay: 3000,
@@ -141,8 +82,8 @@ const Sermons = () => {
       1024: { 
         slidesPerView: 3,
         navigation: {
-          prevEl: '.swiper-button-prev',
-          nextEl: '.swiper-button-next',
+          prevEl: navigationPrevRef.current,
+          nextEl: navigationNextRef.current,
         }
       },
     },
@@ -150,6 +91,7 @@ const Sermons = () => {
       swiperRef.current = swiper;
     },
     onInit: (swiper) => {
+      // Atualiza a navegação após a inicialização
       swiper.navigation.update();
     }
   };
@@ -166,8 +108,8 @@ const Sermons = () => {
 
         <div className="relative">
           {/* Botões de navegação */}
-          <div className="swiper-button-prev hidden md:block"></div>
-          <div className="swiper-button-next hidden md:block"></div>
+          <div ref={navigationPrevRef} className="swiper-button-prev hidden md:block"></div>
+          <div ref={navigationNextRef} className="swiper-button-next hidden md:block"></div>
 
           <Swiper {...swiperParams} className="mb-12">
             {videos.map((src, index) => (
