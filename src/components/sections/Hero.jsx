@@ -15,7 +15,7 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
               <a href="#events" className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition duration-300 text-center">
-                Próximos Eventos <FontAwesomeIcon icon={faCalendarAlt} className="ml-2" />
+                Agenda <FontAwesomeIcon icon={faCalendarAlt} className="ml-2" />
               </a>
               <a href="#sermons" className="bg-transparent hover:bg-gray-800 text-white border border-gray-600 px-6 py-3 rounded-lg text-lg font-semibold transition duration-300 text-center">
                 Assistir Mensagens <FontAwesomeIcon icon={faPlayCircle} className="ml-2" />

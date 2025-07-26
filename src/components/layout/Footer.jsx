@@ -37,7 +37,7 @@ const Footer = () => {
           <p className="text-gray-400 text-sm">
             <footer className="bg-gray-900 text-gray-400 text-center py-6 text-sm">
             &copy; {new Date().getFullYear()} Igreja Lagoinha. Todos os direitos reservados.  
-            <span className="block sm:inline"> Desenvolvido por <strong className="text-white">Caio Moisés Vieira Cavalcante</strong></span>
+            <span className="block sm:inline"> Desenvolvido por @ocaiomoises</span>
             </footer>
           </p>
         </div>
