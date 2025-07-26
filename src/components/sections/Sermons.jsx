@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -9,7 +9,8 @@ const Sermons = () => {
   const playersRef = useRef({});
   const [apiReady, setApiReady] = useState(false);
 
-  const videos = [
+  // Usando useMemo para evitar recriação da array em cada render
+  const videos = useMemo(() => [
     "https://www.youtube.com/embed/mEBFQFDpSjM",
     "https://www.youtube.com/embed/EsGuIGRXimE",
     "https://www.youtube.com/embed/ONE1mkadXSk",
@@ -20,7 +21,7 @@ const Sermons = () => {
     "https://www.youtube.com/embed/s9siPpele6w",
     "https://www.youtube.com/embed/o8mst2sUXFw",
     "https://www.youtube.com/embed/ZTpuX63U7bE",
-  ];
+  ], []);
 
   // Carrega a API do YouTube
   useEffect(() => {
