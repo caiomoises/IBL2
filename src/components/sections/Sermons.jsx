@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -31,59 +31,77 @@ const Sermons = () => {
 
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
+    tag.async = true;
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     window.onYouTubeIframeAPIReady = () => {
       setApiReady(true);
     };
+
+    return () => {
+      if (window.onYouTubeIframeAPIReady) {
+        window.onYouTubeIframeAPIReady = null;
+      }
+    };
+  }, []);
+
+  // Handler para mudanças de estado dos vídeos
+  const handleStateChange = useCallback((event) => {
+    if (!swiperRef.current || !swiperRef.current.autoplay) return;
+    
+    const isAnyVideoPlaying = Object.values(playersRef.current).some(
+      player => player?.getPlayerState?.() === window.YT.PlayerState.PLAYING
+    );
+
+    if (event.data === window.YT.PlayerState.PLAYING) {
+      swiperRef.current.autoplay.stop();
+    } else if (
+      (event.data === window.YT.PlayerState.PAUSED ||
+      event.data === window.YT.PlayerState.ENDED) &&
+      !isAnyVideoPlaying
+    ) {
+      swiperRef.current.autoplay.start();
+    }
   }, []);
 
   // Inicializa os players quando a API estiver pronta
   useEffect(() => {
     if (!apiReady || !swiperRef.current) return;
 
-    const handleStateChange = (event, index) => {
-      if (!swiperRef.current) return;
-      
-      // Pausa o autoplay do carrossel quando qualquer vídeo começa a tocar
-      if (event.data === window.YT.PlayerState.PLAYING) {
-        swiperRef.current.autoplay.stop();
-      } 
-      // Reinicia o autoplay quando o vídeo é pausado ou termina
-      else if (
-        event.data === window.YT.PlayerState.PAUSED ||
-        event.data === window.YT.PlayerState.ENDED
-      ) {
-        // Verifica se nenhum outro vídeo está tocando antes de reiniciar
-        const isAnyVideoPlaying = Object.values(playersRef.current).some(
-          player => player?.getPlayerState?.() === window.YT.PlayerState.PLAYING
-        );
-        
-        if (!isAnyVideoPlaying) {
-          swiperRef.current.autoplay.start();
-        }
-      }
-    };
-
-    videos.forEach((_, index) => {
-      // Só cria o player se ele ainda não existir
-      if (!playersRef.current[index]) {
-        playersRef.current[index] = new window.YT.Player(`player-${index}`, {
-          events: {
-            onStateChange: (event) => handleStateChange(event, index)
+    const initializePlayers = () => {
+      videos.forEach((_, index) => {
+        try {
+          if (!playersRef.current[index] && document.getElementById(`player-${index}`)) {
+            playersRef.current[index] = new window.YT.Player(`player-${index}`, {
+              events: {
+                onStateChange: handleStateChange
+              }
+            });
           }
-        });
-      }
-    });
-
-    return () => {
-      // Limpa os players quando o componente desmontar
-      Object.values(playersRef.current).forEach(player => {
-        if (player && player.destroy) player.destroy();
+        } catch (error) {
+          console.error(`Error initializing player ${index}:`, error);
+        }
       });
     };
-  }, [apiReady]);
+
+    initializePlayers();
+
+    // Armazena a referência atual para cleanup
+    const currentPlayers = playersRef.current;
+
+    return () => {
+      Object.values(currentPlayers).forEach(player => {
+        try {
+          if (player && typeof player.destroy === 'function') {
+            player.destroy();
+          }
+        } catch (error) {
+          console.error('Error destroying player:', error);
+        }
+      });
+    };
+  }, [apiReady, videos, handleStateChange]);
 
   return (
     <section id="sermons" className="py-16 bg-gray-800">
@@ -115,7 +133,7 @@ const Sermons = () => {
         >
           {videos.map((src, index) => (
             <SwiperSlide key={index}>
-              <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
+              <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg bg-black">
                 <iframe
                   id={`player-${index}`}
                   className="w-full h-full"
@@ -124,7 +142,10 @@ const Sermons = () => {
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                ></iframe>
+                  playsInline
+                  webkit-playsinline="true"
+                  loading="lazy"
+                />
               </div>
             </SwiperSlide>
           ))}
@@ -134,7 +155,8 @@ const Sermons = () => {
           <a
             href="https://www.youtube.com/@lagoinhacidadeverde/streams"
             className="inline-flex items-center px-6 py-3 border border-gray-600 text-white rounded-lg hover:bg-gray-700 transition duration-300"
-            target="_blank" rel="noopener noreferrer"
+            target="_blank" 
+            rel="noopener noreferrer"
           >
             Ver todas as mensagens
           </a>
