@@ -6,10 +6,8 @@ import { Navigation, Autoplay } from 'swiper/modules';
 
 const Sermons = () => {
   const swiperRef = useRef(null);
-  const navigationPrevRef = useRef(null);
-  const navigationNextRef = useRef(null);
+  const playersRef = useRef({});
   const [apiReady, setApiReady] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   const videos = [
     "https://www.youtube.com/embed/mEBFQFDpSjM",
@@ -24,20 +22,6 @@ const Sermons = () => {
     "https://www.youtube.com/embed/ZTpuX63U7bE",
   ];
 
-  // Detecta se é mobile
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkIfMobile();
-    window.addEventListener('resize', checkIfMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkIfMobile);
-    };
-  }, []);
-
   // Carrega a API do YouTube
   useEffect(() => {
     if (window.YT) {
@@ -47,54 +31,59 @@ const Sermons = () => {
 
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
-    tag.async = true;
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
     window.onYouTubeIframeAPIReady = () => {
       setApiReady(true);
     };
-
-    return () => {
-      if (window.onYouTubeIframeAPIReady) {
-        window.onYouTubeIframeAPIReady = null;
-      }
-    };
   }, []);
 
-  // Configurações do Swiper
-  const swiperParams = {
-    modules: [Navigation, Autoplay],
-    spaceBetween: 20,
-    slidesPerView: 1,
-    navigation: {
-      prevEl: navigationPrevRef.current,
-      nextEl: navigationNextRef.current,
-    },
-    autoplay: {
-      delay: 3000,
-      disableOnInteraction: false,
-    },
-    loop: true,
-    breakpoints: {
-      640: { slidesPerView: 1 },
-      768: { slidesPerView: 2, navigation: false },
-      1024: { 
-        slidesPerView: 3,
-        navigation: {
-          prevEl: navigationPrevRef.current,
-          nextEl: navigationNextRef.current,
+  // Inicializa os players quando a API estiver pronta
+  useEffect(() => {
+    if (!apiReady || !swiperRef.current) return;
+
+    const handleStateChange = (event, index) => {
+      if (!swiperRef.current) return;
+      
+      // Pausa o autoplay do carrossel quando qualquer vídeo começa a tocar
+      if (event.data === window.YT.PlayerState.PLAYING) {
+        swiperRef.current.autoplay.stop();
+      } 
+      // Reinicia o autoplay quando o vídeo é pausado ou termina
+      else if (
+        event.data === window.YT.PlayerState.PAUSED ||
+        event.data === window.YT.PlayerState.ENDED
+      ) {
+        // Verifica se nenhum outro vídeo está tocando antes de reiniciar
+        const isAnyVideoPlaying = Object.values(playersRef.current).some(
+          player => player?.getPlayerState?.() === window.YT.PlayerState.PLAYING
+        );
+        
+        if (!isAnyVideoPlaying) {
+          swiperRef.current.autoplay.start();
         }
-      },
-    },
-    onSwiper: (swiper) => {
-      swiperRef.current = swiper;
-    },
-    onInit: (swiper) => {
-      // Atualiza a navegação após a inicialização
-      swiper.navigation.update();
-    }
-  };
+      }
+    };
+
+    videos.forEach((_, index) => {
+      // Só cria o player se ele ainda não existir
+      if (!playersRef.current[index]) {
+        playersRef.current[index] = new window.YT.Player(`player-${index}`, {
+          events: {
+            onStateChange: (event) => handleStateChange(event, index)
+          }
+        });
+      }
+    });
+
+    return () => {
+      // Limpa os players quando o componente desmontar
+      Object.values(playersRef.current).forEach(player => {
+        if (player && player.destroy) player.destroy();
+      });
+    };
+  }, [apiReady]);
 
   return (
     <section id="sermons" className="py-16 bg-gray-800">
@@ -106,32 +95,40 @@ const Sermons = () => {
           <div className="w-20 h-1 bg-yellow-500 mx-auto mt-4"></div>
         </div>
 
-        <div className="relative">
-          {/* Botões de navegação */}
-          <div ref={navigationPrevRef} className="swiper-button-prev hidden md:block"></div>
-          <div ref={navigationNextRef} className="swiper-button-next hidden md:block"></div>
-
-          <Swiper {...swiperParams} className="mb-12">
-            {videos.map((src, index) => (
-              <SwiperSlide key={index}>
-                <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg bg-black">
-                  <iframe
-                    id={`player-${index}`}
-                    className="w-full h-full"
-                    src={`${src}?enablejsapi=1&origin=${window.location.origin}`}
-                    title={`Sermão ${index + 1}`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    playsInline
-                    webkit-playsinline="true"
-                    loading="lazy"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          spaceBetween={20}
+          slidesPerView={1}
+          navigation
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          loop={true}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+          className="mb-12"
+          onSwiper={(swiper) => (swiperRef.current = swiper)}
+        >
+          {videos.map((src, index) => (
+            <SwiperSlide key={index}>
+              <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden shadow-lg">
+                <iframe
+                  id={`player-${index}`}
+                  className="w-full h-full"
+                  src={`${src}?enablejsapi=1&origin=${window.location.origin}`}
+                  title={`Sermão ${index + 1}`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
 
         <div className="text-center">
           <a
