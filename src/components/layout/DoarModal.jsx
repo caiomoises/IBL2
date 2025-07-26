@@ -8,6 +8,10 @@ const DoarModal = ({ isOpen, onClose }) => {
     } else {
       document.body.style.overflow = '';
     }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -18,6 +22,7 @@ const DoarModal = ({ isOpen, onClose }) => {
         <button
           className="absolute top-3 right-4 text-gray-600 hover:text-gray-800 text-xl font-bold"
           onClick={onClose}
+          aria-label="Fechar modal"
         >
           &times;
         </button>
@@ -30,10 +35,6 @@ const DoarModal = ({ isOpen, onClose }) => {
 
         <div className="text-center">
           <p className="mb-2 font-medium text-gray-700"><br />DÍZIMOS E OFERTAS PARA A IGREJA:<br />Chave:<br />ofertaslagoinhacv@gmail.com</p>
-          <img src="/images/reforma.jpg" alt="QR Code PIX Missões" className="mx-auto w-40" />
-        </div>
-        <div className="text-center">
-          <p className="mb-2 font-medium text-gray-700"><br />PIX salinha kids:</p>
           <img src="/images/reforma.jpg" alt="QR Code PIX Missões" className="mx-auto w-40" />
         </div>
       </div>
